@@ -1,0 +1,3 @@
+[submodule "studentapigateway/protos/studentproto"]
+	path = studentapigateway/protos/studentproto
+	url = git@github.com:Abdurahmonjon/studentproto.git

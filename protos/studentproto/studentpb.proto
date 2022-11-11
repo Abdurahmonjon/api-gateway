@@ -1,0 +1,53 @@
+syntax = "proto3";
+package  protos;
+import "google/protobuf/empty.proto";
+option go_package = "github.com/Abdurahmonjon/studentproto";
+
+service StudentService{
+  rpc RegisterStudent(RegisterStudentRequest) returns (RegisterStudentResponse);
+  rpc UpdateStudent(UpdateStudentRequest) returns (Response);
+  rpc DeleteStudent(DeleteStudentRequest) returns (google.protobuf.Empty);
+  rpc GetAllStudents(GetAllStudentsRequest) returns (GetAllStudentsResponse);
+  rpc GetStudent(GetStudentRequest) returns (RegisterStudentResponse);
+}
+
+message UpdateStudentRequest {
+  string Id = 1;
+  string Username = 2;
+  string Firstname = 3;
+  string Lastname = 4;
+}
+
+message GetAllStudentsResponse {
+  repeated RegisterStudentResponse students = 1;
+}
+
+message GetAllStudentsRequest{
+  int32 page = 1;
+  int32 limit = 2;
+}
+
+message RegisterStudentResponse {
+  string id = 1;
+  string Username = 2;
+  string Firstname = 3;
+  string Lastname = 4;
+}
+
+message Response {
+  string Ok = 1;
+}
+
+message GetStudentRequest {
+  string Username = 1;
+}
+
+message DeleteStudentRequest {
+  string Username = 1;
+}
+
+message RegisterStudentRequest {
+  string Username = 1;
+  string Firstname = 2;
+  string Lastname = 3;
+}

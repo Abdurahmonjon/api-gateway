@@ -1,0 +1,182 @@
+definitions:
+  modules.Error:
+    properties:
+      message:
+        type: string
+    type: object
+  modules.StandardErrorModel:
+    properties:
+      error:
+        $ref: '#/definitions/modules.Error'
+    type: object
+  modules.Student:
+    properties:
+      first_name:
+        type: string
+      id:
+        type: string
+      last_name:
+        type: string
+      user_name:
+        type: string
+    type: object
+  modules.StudentList:
+    properties:
+      students:
+        items:
+          $ref: '#/definitions/modules.Student'
+        type: array
+    type: object
+info:
+  contact: {}
+paths:
+  /v1/students:
+    get:
+      consumes:
+      - application/json
+      description: This API for getting list of students
+      parameters:
+      - description: Page
+        in: query
+        name: page
+        type: string
+      - description: Limit
+        in: query
+        name: limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/modules.StudentList'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/modules.StandardErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/modules.StandardErrorModel'
+      summary: ListStudents
+      tags:
+      - task
+  /v1/students/:
+    post:
+      consumes:
+      - application/json
+      description: This API for creating a new student
+      parameters:
+      - description: RegisterStudentRequest
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/modules.Student'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/modules.Student'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/modules.StandardErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/modules.StandardErrorModel'
+      summary: CreateStudent
+      tags:
+      - Student
+  /v1/students/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: This API for deleting student
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/modules.StandardErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/modules.StandardErrorModel'
+      summary: DeleteTask
+      tags:
+      - task
+    get:
+      consumes:
+      - application/json
+      description: This API for getting student details
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/modules.Student'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/modules.StandardErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/modules.StandardErrorModel'
+      summary: GetStudent
+      tags:
+      - task
+    put:
+      consumes:
+      - application/json
+      description: This API for updating student
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: UpdateStudentRequest
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/modules.Student'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/modules.StandardErrorModel'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/modules.StandardErrorModel'
+      summary: UpdateStudent
+      tags:
+      - student
+swagger: "2.0"
