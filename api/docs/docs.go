@@ -16,56 +16,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/v1/students": {
-            "get": {
-                "description": "This API for getting list of students",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "task"
-                ],
-                "summary": "ListStudents",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Page",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "Limit",
-                        "name": "limit",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/modules.StudentList"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/modules.StandardErrorModel"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/modules.StandardErrorModel"
-                        }
-                    }
-                }
-            }
-        },
-        "/v1/students/": {
+        "/v1/student": {
             "post": {
                 "description": "This API for creating a new student",
                 "consumes": [
@@ -75,7 +26,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Student"
+                    "Students"
                 ],
                 "summary": "CreateStudent",
                 "parameters": [
@@ -111,7 +62,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/students/{id}": {
+        "/v1/student/{id}": {
             "get": {
                 "description": "This API for getting student details",
                 "consumes": [
@@ -121,7 +72,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "task"
+                    "Students"
                 ],
                 "summary": "GetStudent",
                 "parameters": [
@@ -163,13 +114,13 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "student"
+                    "Students"
                 ],
                 "summary": "UpdateStudent",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "ID",
+                        "description": "id",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -211,13 +162,13 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "task"
+                    "Students"
                 ],
                 "summary": "DeleteTask",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "ID",
+                        "description": "username",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -226,6 +177,55 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/modules.StandardErrorModel"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/modules.StandardErrorModel"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/students": {
+            "get": {
+                "description": "This API for getting list of students",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Students"
+                ],
+                "summary": "ListStudents",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Limit",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/modules.StudentList"
+                        }
                     },
                     "400": {
                         "description": "Bad Request",
@@ -264,9 +264,6 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "first_name": {
-                    "type": "string"
-                },
-                "id": {
                     "type": "string"
                 },
                 "last_name": {

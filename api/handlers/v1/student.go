@@ -2,26 +2,26 @@ package v1
 
 import (
 	"context"
+	"fmt"
+	pb "github.com/Abdurahmonjon/api-gateway/genproto/gitlab.com/Abdurahmonjon/studentproto"
 	"github.com/Abdurahmonjon/api-gateway/pkg/logger"
 	"github.com/Abdurahmonjon/api-gateway/pkg/utils"
-	pb "github.com/Abdurahmonjon/api-gateway/protos/studentproto"
 	"github.com/gin-gonic/gin"
 	"google.golang.org/protobuf/encoding/protojson"
 	"net/http"
-	"time"
 )
 
 // CreateStudent ...
 // @Summary CreateStudent
 // @Description This API for creating a new student
-// @Tags Student
+// @Tags Students
 // @Accept  json
 // @Produce  json
 // @Param Student request body modules.Student true "RegisterStudentRequest"
 // @Success 200 {object} modules.Student
 // @Failure 400 {object} modules.StandardErrorModel
 // @Failure 500 {object} modules.StandardErrorModel
-// @Router /v1/students/ [post]
+// @Router /v1/student [POST]
 func (h handlerV1) CreateStudent(c *gin.Context) {
 	var (
 		body        pb.RegisterStudentRequest
@@ -29,6 +29,7 @@ func (h handlerV1) CreateStudent(c *gin.Context) {
 	)
 	jspbMarshal.UseProtoNames = true
 	err := c.ShouldBindJSON(&body)
+	fmt.Println("coming infos:", body.UserName, body.FirstName, body.LastName)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -36,9 +37,9 @@ func (h handlerV1) CreateStudent(c *gin.Context) {
 		h.log.Error("failed to bind json", logger.Error(err))
 		return
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
-	defer cancel()
-	response, err := h.serviceManager.TaskService().RegisterStudent(ctx, &body)
+	//ctx, cancel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
+	//defer cancel()
+	response, err := h.serviceManager.TaskService().RegisterStudent(context.Background(), &body)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"Error": err.Error(),
@@ -52,26 +53,27 @@ func (h handlerV1) CreateStudent(c *gin.Context) {
 // GetStudent ...
 // @Summary GetStudent
 // @Description This API for getting student details
-// @Tags task
+// @Tags Students
 // @Accept  json
 // @Produce  json
 // @Param id path string true "ID"
 // @Success 200 {object} modules.Student
 // @Failure 400 {object} modules.StandardErrorModel
 // @Failure 500 {object} modules.StandardErrorModel
-// @Router /v1/students/{id} [get]
+// @Router /v1/student/{id} [GET]
 func (h *handlerV1) GetStudent(c *gin.Context) {
 	var jspbMarshal protojson.MarshalOptions
 	jspbMarshal.UseProtoNames = true
 
-	guid := c.Param("username")
+	guid := c.Param("id")
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
-	defer cancel()
+	//ctx, cancel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
+	//defer cancel()
 
 	responcse, err := h.serviceManager.TaskService().GetStudent(
-		ctx, &pb.GetStudentRequest{
-			Username: guid})
+		context.Background(), &pb.GetStudentRequest{
+			Id: guid,
+		})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"Error": err.Error(),
@@ -85,22 +87,28 @@ func (h *handlerV1) GetStudent(c *gin.Context) {
 // UpdateStudent ...
 // @Summary UpdateStudent
 // @Description This API for updating student
-// @Tags student
+// @Tags Students
 // @Accept  json
 // @Produce  json
-// @Param id path string true "ID"
-// @Param Task request body modules.Student true "UpdateStudentRequest"
+// @Param id path string true "id"
+// @Param Student request body modules.Student true "UpdateStudentRequest"
 // @Success 200
 // @Failure 400 {object} modules.StandardErrorModel
 // @Failure 500 {object} modules.StandardErrorModel
-// @Router /v1/students/{id} [put]
+// @Router /v1/student/{id} [PUT]
 func (h *handlerV1) UpdateStudent(c *gin.Context) {
 	var (
 		body        pb.UpdateStudentRequest
 		jspbMarshal protojson.MarshalOptions
 	)
 	jspbMarshal.UseProtoNames = true
+
+	oldId := c.Param("id")
+	fmt.Println("id->", oldId)
+
 	err := c.ShouldBindJSON(&body)
+	body.Id = oldId
+	fmt.Println("body id:", body.Id, body.UserName)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
@@ -108,14 +116,15 @@ func (h *handlerV1) UpdateStudent(c *gin.Context) {
 		h.log.Error("failed to bind json", logger.Error(err))
 		return
 	}
-	body.Id = c.Param("id")
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
-	defer cancel()
-	response, err := h.serviceManager.TaskService().UpdateStudent(ctx, &body)
+
+	//ctx, cancel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
+	//defer cancel()
+	response, err := h.serviceManager.TaskService().UpdateStudent(context.Background(), &body)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"Error": err.Error(),
 		})
+		fmt.Println("id", body.Id)
 		h.log.Error("failed to update student", logger.Error(err))
 		return
 	}
@@ -125,23 +134,23 @@ func (h *handlerV1) UpdateStudent(c *gin.Context) {
 // DeleteStudent ...
 // @Summary DeleteTask
 // @Description This API for deleting student
-// @Tags task
+// @Tags Students
 // @Accept  json
 // @Produce  json
-// @Param id path string true "ID"
+// @Param id path string true "username"
 // @Success 200
 // @Failure 400 {object} modules.StandardErrorModel
 // @Failure 500 {object} modules.StandardErrorModel
-// @Router /v1/students/{id} [delete]
+// @Router /v1/student/{id} [DELETE]
 func (h *handlerV1) DeleteStudent(c *gin.Context) {
 	var jspbMarshal protojson.MarshalOptions
 	jspbMarshal.UseProtoNames = true
 
-	username := c.Param("username")
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
-	defer cancel()
+	id := c.Param("id")
+	//ctx, cancel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
+	//defer cancel()
 	response, err := h.serviceManager.TaskService().DeleteStudent(
-		ctx, &pb.DeleteStudentRequest{Username: username})
+		context.Background(), &pb.DeleteStudentRequest{Id: id})
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
@@ -157,7 +166,7 @@ func (h *handlerV1) DeleteStudent(c *gin.Context) {
 // ListStudents ...
 // @Summary ListStudents
 // @Description This API for getting list of students
-// @Tags task
+// @Tags Students
 // @Accept  json
 // @Produce  json
 // @Param page query string false "Page"
@@ -165,7 +174,7 @@ func (h *handlerV1) DeleteStudent(c *gin.Context) {
 // @Success 200 {object} modules.StudentList
 // @Failure 400 {object} modules.StandardErrorModel
 // @Failure 500 {object} modules.StandardErrorModel
-// @Router /v1/students [get]
+// @Router /v1/students [GET]
 func (h *handlerV1) ListStudents(c *gin.Context) {
 	queryParams := c.Request.URL.Query()
 	params, errStr := utils.ParseQueryParams(queryParams)
@@ -178,10 +187,10 @@ func (h *handlerV1) ListStudents(c *gin.Context) {
 	}
 	var jspbMarshal protojson.MarshalOptions
 	jspbMarshal.UseProtoNames = true
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
-	defer cancel()
+	//ctx, cancel := context.WithTimeout(context.Background(), time.Second*time.Duration(h.cfg.CtxTimeout))
+	//defer cancel()
 	response, err := h.serviceManager.TaskService().GetAllStudents(
-		ctx, &pb.GetAllStudentsRequest{
+		context.Background(), &pb.GetAllStudentsRequest{
 			Page:  int32(params.Page),
 			Limit: int32(params.Limit),
 		})

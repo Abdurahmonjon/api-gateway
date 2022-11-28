@@ -25,10 +25,10 @@ func Load() Config {
 	c.Environment = cast.ToString(getOrReturnDefault("EVIRONMENT", "develop"))
 	c.LogLevel = cast.ToString(getOrReturnDefault("LOG_LEVEL", "debug"))
 	c.HTTPPort = cast.ToString(getOrReturnDefault("HTTP_PORT", ":8080"))
-	c.StudentServiceHost = cast.ToString(getOrReturnDefault("TASK_SERVICE_HOST", "127.0.0.1"))
-	c.StudentServicePort = cast.ToInt(getOrReturnDefault("TASK_SERVICE_PORT", 50051))
+	c.StudentServiceHost = cast.ToString(getOrReturnDefault("STUDENT_SERVICE_HOST", "127.0.0.1"))
+	c.StudentServicePort = cast.ToInt(getOrReturnDefault("student_SERVICE_PORT", 50051))
 
-	c.CtxTimeout = cast.ToInt(getOrReturnDefault("CTX_TIMEOUT", 7))
+	c.CtxTimeout = cast.ToInt(getOrReturnDefault("CTX_TIMEOUT", 100000000))
 	return c
 }
 

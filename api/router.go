@@ -1,14 +1,16 @@
 package api
 
 import (
+	_ "github.com/Abdurahmonjon/api-gateway/api/docs"
 	v1 "github.com/Abdurahmonjon/api-gateway/api/handlers/v1"
-	"github.com/gin-gonic/gin"
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
 
 	"github.com/Abdurahmonjon/api-gateway/config"
 	"github.com/Abdurahmonjon/api-gateway/pkg/logger"
 	"github.com/Abdurahmonjon/api-gateway/services"
+
+	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type Option struct {
@@ -30,12 +32,12 @@ func New(option Option) *gin.Engine {
 
 	api := router.Group("/v1")
 	api.POST("/student", handlerV1.CreateStudent)
-	api.GET("student/:username", handlerV1.GetStudent)
+	api.GET("student/:id", handlerV1.GetStudent)
 	api.GET("/students", handlerV1.ListStudents)
-	api.PUT("/student/:username", handlerV1.UpdateStudent)
+	api.PUT("/student/:id", handlerV1.UpdateStudent)
 	api.DELETE("/student/:id", handlerV1.DeleteStudent)
 
-	url := ginSwagger.URL("swagger/docs.json")
+	url := ginSwagger.URL("swagger/doc.json")
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 
 	return router

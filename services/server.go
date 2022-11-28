@@ -3,10 +3,11 @@ package services
 import (
 	"fmt"
 	"github.com/Abdurahmonjon/api-gateway/config"
-	pb "github.com/Abdurahmonjon/api-gateway/protos/studentproto"
+	pb "github.com/Abdurahmonjon/api-gateway/genproto/gitlab.com/Abdurahmonjon/studentproto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/resolver"
+	"log"
 )
 
 type IServiceManager interface {
@@ -30,6 +31,7 @@ func NewServiceManager(conf *config.Config) (IServiceManager, error) {
 	if err != nil {
 		return nil, err
 	}
+	log.Println("keldi mana")
 
 	serviceManager := &serviceManager{
 		taskService: pb.NewStudentServiceClient(connTask),
